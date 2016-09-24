@@ -87,3 +87,8 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+#stuff not used
+.classpath
+.project
+.settings
