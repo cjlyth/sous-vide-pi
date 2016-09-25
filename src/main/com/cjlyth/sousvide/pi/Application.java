@@ -27,8 +27,5 @@ public class Application {
 		} catch (Exception ie) {
 			logger.error("{} threw an InterruptedException: {}", METHOD_NAME, ie);
 		}
-//		catch (CardReaderSerialServiceException csse) {
-//			logger.error("{} threw a CardReaderSerialServiceException: {}", METHOD_NAME, csse);
-//		}
 	}
 }

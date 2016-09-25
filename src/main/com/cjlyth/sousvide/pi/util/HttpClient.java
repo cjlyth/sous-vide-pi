@@ -7,13 +7,9 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.stereotype.Component;
 
-/**
- * Http util class for web service call
- * @author hesparza
- * @version $Id: HttpUtils.java 6062 2014-12-17 19:21:02Z hesparza $
- *
- */
+@Component
 public class HttpClient {
 	/**
 	 * Performs POST call by sending a string payload, expects a string response
@@ -24,7 +20,7 @@ public class HttpClient {
 	 * @return
 	 * @throws IOException
 	 */
-	public String doHttpRequest(final String wsUrl, final String methodName, final String payload) throws IOException {
+	public String doHttpRequest(final String wsUrl, final String methodName, final String payload, final String requestMethod) throws IOException {
 		final String METHOD_NAME = getClass().getName() + ".getStringByStringPOST()";
 		String response = null;
 		URL url = null;
@@ -39,10 +35,10 @@ public class HttpClient {
 			url = new URL(urlBuilder.toString());
 			if (url.toString().toUpperCase().contains("HTTPS://")) {
 				httpsConnection = (HttpsURLConnection) url.openConnection();
-				httpsConnection.setRequestMethod("GET");
+				httpsConnection.setRequestMethod(requestMethod);
 				httpsConnection.setDoOutput(true);
 				httpsConnection.setDoInput(true);
-				httpsConnection.setRequestProperty("Content-Type", "application/text");
+				httpsConnection.setRequestProperty("Content-Type", "application/json");
 				httpsConnection.setRequestProperty("Accept", "application/text");
 				httpsConnection.setConnectTimeout(5000);
 //				if (payload != null) {
@@ -63,8 +59,8 @@ public class HttpClient {
 				httpConnection.setRequestMethod("GET");
 				httpConnection.setDoOutput(true);
 				httpConnection.setDoInput(true);
-				httpConnection.setRequestProperty("Content-Type", "application/text");
-				httpConnection.setRequestProperty("Accept", "application/text");
+				httpConnection.setRequestProperty("Content-Type", "application/json");
+				httpConnection.setRequestProperty("Accept", "application/json");
 				httpConnection.setConnectTimeout(5000);
 //				if (payload != null) {
 //					outputStreamWriter = new OutputStreamWriter(httpConnection.getOutputStream());
