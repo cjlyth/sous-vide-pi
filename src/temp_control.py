@@ -5,6 +5,7 @@ import time
 import serial
 import requests
 import json
+from decimal import Decimal
 
 ser = serial.Serial(
     port='/dev/ttyACM0',
@@ -27,8 +28,8 @@ def getConfig():
     else :
         return {'running': False}
 
-def sendLog():
-    payload = json.dumps({'temperature': ser.readline()})
+def sendLog(temp):
+    payload = json.dumps({'temperature': temp})
     resp = requests.post(logsUrl, headers = headers, data = payload)
     if resp.status_code == 200 :
         return resp.json();
@@ -39,15 +40,18 @@ while True:
     config = getConfig()
     if config['running'] :
         minTemp = config['temperature'] - 5
-        maxTemp = config['temperature'] + 5
-        logEntry = sendLog()
-        print('current temp: {}, desired range: {} - {}').format(logEntry['temperature'],minTemp,maxTemp)
-        if logEntry['temperature'] > 0:
-            if logEntry['temperature'] < maxTemp:
+        maxTemp = config['temperature']
+        sTemp = ser.readline()
+        dTemp = Decimal(sTemp)
+        print('read temp: {}').format(dTemp)
+        sendLog(sTemp)
+        print('current temp: {}, desired range: {} - {}').format(dTemp,minTemp,maxTemp)
+        if dTemp > 0:
+            if dTemp < maxTemp:
                 ser.write('1')
             else:
                 ser.write('0')
             # print('is running: {}').format(config['running'])
     else:
         ser.write('0')
-    time.sleep(10)
+    time.sleep(60)
